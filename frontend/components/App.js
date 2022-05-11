@@ -12,15 +12,19 @@ state = {
   todoNameInput: "",
 }
 
+resetForm = () =>{
+  this.setState({...this.state, todoNameInput: ''})
+}
+
+setAxiosResponseError = err => this.setState({...this.state, error: err.response.data.message})
+
 postNewTodo = () => {
   axios.post(URL, {name: this.state.todoNameInput})
   .then(res => {
     this.fetchAllTodos()
-    this.setState({...this.state, todoNameInput: ''})
+    this.resetForm()
   })
-  .catch(err => {
-    this.setState({...this.state, error: err.response.data.message})
-  })
+  .catch(this.setAxiosResponseError)
 }
 
 onTodoFormSubmit = evt => {
@@ -38,12 +42,8 @@ fetchAllTodos = () => {
     .then(res => {
       this.setState({...this.state, todos: res.data.data})
     })
-    .catch(err => {
-      this.setState({...this.state, error: err.response.data.message})
-    })
+    .catch(this.setAxiosResponseError)
 }
-
-
 
 componentDidMount () {
   this.fetchAllTodos()
